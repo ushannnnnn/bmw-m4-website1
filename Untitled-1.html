@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Top-Down Shooter Game</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #111;
+            overflow: hidden;
+            font-family: sans-serif;
+            color: white;
+        }
+        canvas {
+            display: block;
+            background: #1a1a1a;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            pointer-events: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        #gameover-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            display: none;
+            background: rgba(0,0,0,0.85);
+            padding: 40px;
+            border-radius: 10px;
+            border: 2px solid #ff3333;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            background: #ff3333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        button:hover { background: #cc0000; }
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        Score: <span id="score">0</span> | Health: <span id="health">100</span>%
+    </div>
+
+    <div id="gameover-screen" id="gameover-screen">
+        <h1 style="color: #ff3333; font-size: 48px; margin: 0;">GAME OVER</h1>
+        <p style="font-size: 20px;">Final Score: <span id="final-score">0</span></p>
+        <button onclick="restartGame()">Play Again</button>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Canvas size full screen setting
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Game Variables
+        let player, bullets, enemies, particles, keys, mouse, score, gameActive;
+
+        // Player Setup
+        class Player {
+            constructor(x, y, radius, color) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.speed = 5;
+                this.health = 100;
+                this.angle = 0;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                
+                // Player body
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.closePath();
+
+                // Player Gun (Aiming line)
+                ctx.beginPath();
+                ctx.rect(0, -6, this.radius + 15, 12);
+                ctx.fillStyle = '#666';
+                ctx.fill();
+                ctx.closePath();
+
+                ctx.restore();
+            }
+
+            update() {
+                // Controls movement (W, A, S, D or Arrows)
+                if ((keys['w'] || keys['arrowup']) && this.y - this.radius > 0) this.y -= this.speed;
+                if ((keys['s'] || keys['arrowdown']) && this.y + this.radius < canvas.height) this.y += this.speed;
+                if ((keys['a'] || keys['arrowleft']) && this.x - this.radius > 0) this.x -= this.speed;
+                if ((keys['d'] || keys['arrowright']) && this.x + this.radius < canvas.width) this.x += this.speed;
+
+                // Rotate player towards mouse
+                this.angle = Math.atan2(mouse.y - this.y, mouse.x - this.x);
+
+                this.draw();
+            }
+        }
+
+        // Bullet Setup
+        class Bullet {
+            constructor(x, y, radius, color, velocity) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.velocity = velocity;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.draw();
+            }
+        }
+
+        // Enemy Setup
+        class Enemy {
+            constructor(x, y, radius, color, speed) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.speed = speed;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                // Enemy moves towards player
+                const angle = Math.atan2(player.y - this.y, player.x - this.x);
+                this.x += Math.cos(angle) * this.speed;
+                this.y += Math.sin(angle) * this.speed;
+                this.draw();
+            }
+        }
+
+        // Particle effect for explosions
+        class Particle {
+            constructor(x, y, radius, color, velocity) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.velocity = velocity;
+                this.alpha = 1;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.02;
+                this.draw();
+            }
+        }
+
+        // Initialize / Restart Game
+        function init() {
+            player = new Player(canvas.width / 2, canvas.height / 2, 20, '#00ff88');
+            bullets = [];
+            enemies = [];
+            particles = [];
+            keys = {};
+            mouse = { x: 0, y: 0 };
+            score = 0;
+            gameActive = true;
+            
+            document.getElementById('score').innerText = score;
+            document.getElementById('health').innerText = player.health;
+            document.getElementById('gameover-screen').style.display = 'none';
+        }
+
+        // Enemy Spawning Loop
+        function spawnEnemies() {
+            if(!gameActive) return;
+            
+            // Random position from outside the screen
+            let radius = Math.random() * (30 - 15) + 15;
+            let x, y;
+
+            if (Math.random() < 0.5) {
+                x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
+                y = Math.random() * canvas.height;
+            } else {
+                x = Math.random() * canvas.width;
+                y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
+            }
+
+            const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            const speed = Math.random() * (2.5 - 1) + 1; // Enemy speed
+
+            enemies.push(new Enemy(x, y, radius, color, speed));
+            
+            // Auto calling spawn based on score difficulty
+            setTimeout(spawnEnemies, Math.max(500, 1500 - score * 10));
+        }
+
+        // Animation Loop
+        function animate() {
+            if (!gameActive) return;
+            requestAnimationFrame(animate);
+            
+            // Clear Screen
+            ctx.fillStyle = 'rgba(26, 26, 26, 0.3)'; // Motion blur effect
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            player.update();
+
+            // Particles Update
+            particles.forEach((particle, index) => {
+                if (particle.alpha <= 0) {
+                    particles.splice(index, 1);
+                } else {
+                    particle.update();
+                }
+            });
+
+            // Bullets Update
+            bullets.forEach((bullet, bIndex) => {
+                bullet.update();
+
+                // Remove out of screen bullets
+                if (bullet.x + bullet.radius < 0 || bullet.x - bullet.radius > canvas.width ||
+                    bullet.y + bullet.radius < 0 || bullet.y - bullet.radius > canvas.height) {
+                    bullets.splice(bIndex, 1);
+                }
+            });
+
+            // Enemies Update
+            enemies.forEach((enemy, eIndex) => {
+                enemy.update();
+
+                // Enemy & Player collision (Merenna lang unoth)
+                const distToPlayer = Math.hypot(player.x - enemy.x, player.y - enemy.y);
+                if (distToPlayer - enemy.radius - player.radius < 1) {
+                    enemies.splice(eIndex, 1);
+                    player.health -= 20; // Lose health
+                    document.getElementById('health').innerText = player.health;
+                    
+                    if (player.health <= 0) {
+                        gameOver();
+                    }
+                }
+
+                // Bullets & Enemies collision detection
+                bullets.forEach((bullet, bIndex) => {
+                    const distToBullet = Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y);
+                    
+                    // Bullet wajunama enemy marenawa
+                    if (distToBullet - enemy.radius - bullet.radius < 1) {
+                        
+                        // Create explosion particles
+                        for (let i = 0; i < enemy.radius * 2; i++) {
+                            particles.push(new Particle(bullet.x, bullet.y, Math.random() * 3, enemy.color, {
+                                x: (Math.random() - 0.5) * (Math.random() * 6),
+                                y: (Math.random() - 0.5) * (Math.random() * 6)
+                            }));
+                        }
+
+                        // Shrink big enemies or delete small ones
+                        if (enemy.radius - 10 > 12) {
+                            enemy.radius -= 10;
+                            bullets.splice(bIndex, 1);
+                            score += 10;
+                        } else {
+                            enemies.splice(eIndex, 1);
+                            bullets.splice(bIndex, 1);
+                            score += 25;
+                        }
+                        document.getElementById('score').innerText = score;
+                    }
+                });
+            });
+        }
+
+        // Game Over function
+        function gameOver() {
+            gameActive = false;
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('gameover-screen').style.display = 'block';
+        }
+
+        function restartGame() {
+            init();
+            animate();
+            spawnEnemies();
+        }
+
+        // Event Listeners for Controls
+        window.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
+        window.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
+        
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!gameActive) return;
+            
+            // Calculate bullet velocity based on angle towards mouse
+            const angle = Math.atan2(e.clientY - player.y, e.clientX - player.x);
+            const velocity = {
+                x: Math.cos(angle) * 8, // Bullet Speed
+                y: Math.sin(angle) * 8
+            };
+
+            bullets.push(new Bullet(player.x, player.y, 5, '#ffea00', velocity));
+        });
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Start Game first time
+        init();
+        animate();
+        spawnEnemies();
+    </script>
+</body>
+</html>
