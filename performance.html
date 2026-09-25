@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW M4 — Performance</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .gauge-container { position: relative; width: 250px; height: 250px; margin: 0 auto; }
+        .gauge-arc { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 15; }
+        .gauge-value { fill: none; stroke: #e60000; stroke-width: 15; stroke-dasharray: 600; stroke-dashoffset: 600; transition: stroke-dashoffset 2s ease-out; }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden pt-20">
+    <div id="navbar-container"></div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="py-20 px-4 text-center max-w-5xl mx-auto animate-fade-in">
+            <h1 class="text-5xl md:text-8xl font-black tracking-tighter mb-6 uppercase text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-white to-blue-500">
+                Engineered to Perform
+            </h1>
+            <p class="text-xl text-gray-400 font-light leading-relaxed max-w-3xl mx-auto">
+                Relentless forward thrust. The BMW M4 is defined by its explosive power delivery and razor-sharp handling, setting new benchmarks in the high-performance segment.
+            </p>
+        </section>
+
+        <!-- Animated Performance Dashboard -->
+        <section class="py-16 px-4 max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-8 mb-16">
+                <!-- HP -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl text-center animate-on-scroll">
+                    <h3 class="text-5xl md:text-7xl font-black text-white mb-2"><span class="counter" data-target="530">0</span><span class="text-2xl text-red-600 ml-1">hp</span></h3>
+                    <p class="text-gray-400 uppercase text-xs tracking-[0.2em] font-semibold">Horsepower (Comp)</p>
+                </div>
+                
+                <!-- Torque -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl text-center animate-on-scroll" style="transition-delay: 100ms;">
+                    <h3 class="text-5xl md:text-7xl font-black text-white mb-2"><span class="counter" data-target="650">0</span><span class="text-2xl text-blue-500 ml-1">Nm</span></h3>
+                    <p class="text-gray-400 uppercase text-xs tracking-[0.2em] font-semibold">Torque</p>
+                </div>
+
+                <!-- 0-100 -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl text-center animate-on-scroll" style="transition-delay: 200ms;">
+                    <h3 class="text-5xl md:text-7xl font-black text-white mb-2"><span class="counter-float" data-target="3.5">0.0</span><span class="text-2xl text-white ml-1">s</span></h3>
+                    <p class="text-gray-400 uppercase text-xs tracking-[0.2em] font-semibold">0-100 km/h</p>
+                </div>
+
+                <!-- Top Speed -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl text-center animate-on-scroll" style="transition-delay: 300ms;">
+                    <h3 class="text-5xl md:text-7xl font-black text-white mb-2"><span class="counter" data-target="290">0</span><span class="text-2xl text-gray-500 ml-1">km/h</span></h3>
+                    <p class="text-gray-400 uppercase text-xs tracking-[0.2em] font-semibold">Top Speed (M Package)</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 animate-on-scroll">
+                <div class="border border-white/10 bg-zinc-950 p-6 rounded-xl flex items-center gap-4">
+                    <i data-lucide="settings" class="w-8 h-8 text-blue-500"></i>
+                    <div>
+                        <p class="text-sm text-gray-500 uppercase tracking-wider">Engine</p>
+                        <p class="font-semibold">3.0L M TwinPower Turbo Inline-6</p>
+                    </div>
+                </div>
+                <div class="border border-white/10 bg-zinc-950 p-6 rounded-xl flex items-center gap-4">
+                    <i data-lucide="shuffle" class="w-8 h-8 text-red-500"></i>
+                    <div>
+                        <p class="text-sm text-gray-500 uppercase tracking-wider">Transmission</p>
+                        <p class="font-semibold">8-Speed M Steptronic (Comp)</p>
+                    </div>
+                </div>
+                <div class="border border-white/10 bg-zinc-950 p-6 rounded-xl flex items-center gap-4">
+                    <i data-lucide="move" class="w-8 h-8 text-blue-700"></i>
+                    <div>
+                        <p class="text-sm text-gray-500 uppercase tracking-wider">Drive System</p>
+                        <p class="font-semibold">M xDrive with Active M Differential</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Visualization -->
+        <section class="py-20 px-4 bg-zinc-950/50 border-y border-white/5 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2 animate-on-scroll">
+                    <h2 class="text-4xl font-bold mb-6">Power Meets Control</h2>
+                    <p class="text-gray-400 mb-8 leading-relaxed">
+                        The BMW M4's chassis is a masterpiece of engineering. The rigid body structure, combined with the Adaptive M suspension and M Servotronic steering, creates a symbiotic relationship between driver and machine.
+                    </p>
+                    
+                    <ul class="space-y-6">
+                        <li class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0 mt-1">
+                                <i data-lucide="target" class="w-4 h-4 text-blue-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Active M Differential</h4>
+                                <p class="text-sm text-gray-400">Optimizes traction and driving stability when changing lanes or accelerating out of curves.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0 mt-1">
+                                <i data-lucide="shield" class="w-4 h-4 text-red-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">M Compound Brakes</h4>
+                                <p class="text-sm text-gray-400">Exceptional deceleration, high fade resistance, and reduced unsprung mass for improved agility.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="lg:w-1/2 w-full flex justify-center animate-on-scroll" id="gauge-section">
+                    <div class="gauge-container flex items-center justify-center flex-col">
+                        <svg viewBox="0 0 200 200" class="absolute inset-0 w-full h-full -rotate-90">
+                            <circle cx="100" cy="100" r="90" class="gauge-arc" />
+                            <circle cx="100" cy="100" r="90" class="gauge-value" id="power-gauge" />
+                        </svg>
+                        <div class="text-center z-10 mt-4">
+                            <div class="text-5xl font-black text-white">7200</div>
+                            <div class="text-xs text-red-500 uppercase tracking-widest font-bold mt-1">RPM Max</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Track image -->
+        <section class="py-24 max-w-7xl mx-auto px-4">
+            <div class="rounded-3xl overflow-hidden h-[60vh] relative shadow-2xl shadow-blue-900/20 animate-on-scroll">
+                <img src="images/track.png" class="w-full h-full object-cover" alt="BMW M4 Performance">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-12">
+                    <div>
+                        <h2 class="text-4xl font-bold mb-4">Born on the Nürburgring</h2>
+                        <p class="text-lg text-gray-300 max-w-2xl font-light">Tested and perfected on the world's most demanding race track to ensure peak performance under extreme conditions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-container"></div>
+    <script src="components.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Counter animation
+            const animateCounters = () => {
+                const counters = document.querySelectorAll('.counter');
+                counters.forEach(counter => {
+                    const target = +counter.getAttribute('data-target');
+                    const duration = 2000;
+                    const step = target / (duration / 16);
+                    
+                    let current = 0;
+                    const updateCounter = () => {
+                        current += step;
+                        if(current < target) {
+                            counter.innerText = Math.ceil(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.innerText = target;
+                        }
+                    };
+                    updateCounter();
+                });
+
+                const floatCounters = document.querySelectorAll('.counter-float');
+                floatCounters.forEach(counter => {
+                    const target = +counter.getAttribute('data-target');
+                    const duration = 2000;
+                    const step = target / (duration / 16);
+                    
+                    let current = 0;
+                    const updateCounter = () => {
+                        current += step;
+                        if(current < target) {
+                            counter.innerText = current.toFixed(1);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.innerText = target.toFixed(1);
+                        }
+                    };
+                    updateCounter();
+                });
+            };
+
+            if(typeof ScrollTrigger !== 'undefined') {
+                ScrollTrigger.create({
+                    trigger: ".counter",
+                    start: "top 85%",
+                    onEnter: animateCounters,
+                    once: true
+                });
+
+                ScrollTrigger.create({
+                    trigger: "#gauge-section",
+                    start: "top 75%",
+                    onEnter: () => {
+                        const gauge = document.getElementById('power-gauge');
+                        if(gauge) {
+                            // 600 is total circumference (2 * pi * 90 is ~565, but dasharray is 600).
+                            // Let's set it to animate to showing 85% of the circle
+                            gauge.style.strokeDashoffset = "90";
+                        }
+                    },
+                    once: true
+                });
+            }
+        });
+    </script>
+</body>
+</html>

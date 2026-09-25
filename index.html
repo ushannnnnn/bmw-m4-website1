@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW M4 — The Ultimate Performance Coupe</title>
+    <meta name="description" content="Explore the BMW M4. Born for the road, built for performance.">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .clip-diagonal { clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+    <div id="navbar-container"></div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="relative h-screen flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <img src="images/hero.png" alt="BMW M4 Front" class="w-full h-full object-cover object-center animate-fade-in scale-105 transition-transform duration-[10s] hover:scale-100" />
+                <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[#050505]"></div>
+            </div>
+            
+            <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-20">
+                <h1 class="text-7xl md:text-9xl font-black tracking-tighter mb-4 opacity-0" id="hero-title">
+                    BMW M<span class="text-red-600">4</span>
+                </h1>
+                <p class="text-xl md:text-3xl font-light text-gray-300 mb-10 tracking-wide opacity-0" id="hero-subtitle">
+                    Born for the road. Built for performance.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-6 opacity-0" id="hero-buttons">
+                    <a href="contact.html" class="px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-colors uppercase tracking-wider text-sm flex items-center justify-center gap-2">Explore the M4 <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                    <a href="performance.html" class="px-8 py-4 bg-transparent border border-white text-white font-semibold rounded-full hover:bg-white/10 transition-colors uppercase tracking-wider text-sm backdrop-blur-sm">View Performance</a>
+                </div>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-50 animate-bounce">
+                <span class="text-xs uppercase tracking-widest mb-2">Scroll</span>
+                <i data-lucide="chevron-down" class="w-5 h-5"></i>
+            </div>
+        </section>
+
+        <!-- The M4 Experience -->
+        <section class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-20 animate-on-scroll">
+                <h2 class="text-xs text-blue-500 font-bold uppercase tracking-[0.3em] mb-4">The M4 Experience</h2>
+                <h3 class="text-4xl md:text-5xl font-bold tracking-tight">Pure Adrenaline</h3>
+                <p class="mt-6 text-gray-400 max-w-2xl mx-auto text-lg font-light leading-relaxed">
+                    The BMW M4 blends high-performance motorsport DNA with everyday usability. With its aggressive stance, luxurious interior, and blistering speed, it represents the pinnacle of M engineering.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-card rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 animate-on-scroll group cursor-pointer border-t border-t-white/10" onclick="window.location.href='performance.html'">
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-800 rounded-xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/20">
+                        <i data-lucide="zap" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-4">M Performance</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">Experience unbridled power with the high-revving M TwinPower Turbo inline 6-cylinder petrol engine.</p>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="glass-card rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 animate-on-scroll group cursor-pointer border-t border-t-white/10" onclick="window.location.href='design.html'" style="transition-delay: 100ms;">
+                    <div class="w-14 h-14 bg-gradient-to-br from-zinc-700 to-zinc-900 rounded-xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform border border-zinc-600 shadow-lg">
+                        <i data-lucide="pen-tool" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-4">Iconic Design</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">A striking exterior with the frameless BMW kidney grille, athletic lines, and distinctive M Carbon roof.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-card rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 animate-on-scroll group cursor-pointer border-t border-t-white/10" onclick="window.location.href='technology.html'" style="transition-delay: 200ms;">
+                    <div class="w-14 h-14 bg-gradient-to-br from-red-600 to-red-900 rounded-xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-red-600/20">
+                        <i data-lucide="cpu" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-4">Advanced Technology</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">Equipped with the BMW Curved Display, M-specific instruments, and intuitive digital connectivity.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- M POWER SECTION -->
+        <section class="relative h-[80vh] flex items-center justify-center overflow-hidden mt-12 mb-20 clip-diagonal">
+            <div class="absolute inset-0 z-0">
+                <img src="images/track.png" alt="BMW M4 on track" class="w-full h-full object-cover parallax-bg" />
+                <div class="absolute inset-0 bg-black/60"></div>
+            </div>
+            <div class="relative z-10 text-center px-4 max-w-4xl mx-auto animate-on-scroll">
+                <h2 class="text-7xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-gray-600 mb-6 uppercase opacity-90 drop-shadow-2xl">
+                    M Power
+                </h2>
+                <p class="text-2xl md:text-4xl font-light text-white mb-10 drop-shadow-md">
+                    More than performance.<br>An expression of M.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-container"></div>
+    <script src="components.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            gsap.to("#hero-title", { opacity: 1, y: 0, duration: 1.2, delay: 0.2, ease: "power3.out", startAt: { y: 40 } });
+            gsap.to("#hero-subtitle", { opacity: 1, y: 0, duration: 1.2, delay: 0.4, ease: "power3.out", startAt: { y: 30 } });
+            gsap.to("#hero-buttons", { opacity: 1, y: 0, duration: 1.2, delay: 0.6, ease: "power3.out", startAt: { y: 20 } });
+
+            if(typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.to(".parallax-bg", {
+                    yPercent: 30,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: ".clip-diagonal",
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

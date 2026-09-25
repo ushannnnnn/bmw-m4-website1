@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW M4 — Gallery</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; }
+        .gallery-item { position: relative; overflow: hidden; border-radius: 1rem; cursor: pointer; }
+        .gallery-item img { transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); width: 100%; height: 100%; object-fit: cover; }
+        .gallery-item:hover img { transform: scale(1.1); }
+        .gallery-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); opacity: 0; transition: opacity 0.3s ease; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        .gallery-caption { transform: translateY(20px); transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .gallery-item:hover .gallery-caption { transform: translateY(0); }
+        
+        /* Lightbox */
+        #lightbox { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        #lightbox.open { opacity: 1; visibility: visible; }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden pt-20">
+    <div id="navbar-container"></div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="py-20 px-4 text-center max-w-4xl mx-auto animate-fade-in">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6 uppercase">
+                Visual <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-red-500">Perfection</span>
+            </h1>
+            <p class="text-xl text-gray-400 font-light leading-relaxed mb-10">
+                Explore the striking aesthetics and aggressive stance of the BMW M4 from every angle.
+            </p>
+            
+            <div class="flex flex-wrap justify-center gap-4">
+                <button class="px-6 py-2 rounded-full border border-white/20 bg-white/10 hover:bg-white hover:text-black transition-colors text-sm uppercase tracking-wider font-semibold filter-btn active" data-filter="all">All</button>
+                <button class="px-6 py-2 rounded-full border border-white/20 bg-transparent hover:bg-white hover:text-black transition-colors text-sm uppercase tracking-wider font-semibold filter-btn" data-filter="exterior">Exterior</button>
+                <button class="px-6 py-2 rounded-full border border-white/20 bg-transparent hover:bg-white hover:text-black transition-colors text-sm uppercase tracking-wider font-semibold filter-btn" data-filter="interior">Interior</button>
+                <button class="px-6 py-2 rounded-full border border-white/20 bg-transparent hover:bg-white hover:text-black transition-colors text-sm uppercase tracking-wider font-semibold filter-btn" data-filter="track">Track</button>
+            </div>
+        </section>
+
+        <!-- Gallery Grid -->
+        <section class="py-10 px-4 max-w-[1400px] mx-auto mb-20">
+            <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6" id="gallery-container">
+                <!-- Item 1 -->
+                <div class="gallery-item h-[500px] animate-on-scroll" data-category="exterior" onclick="openLightbox(0)">
+                    <img src="images/hero.png" alt="Front Exterior">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <span class="text-blue-400 text-xs uppercase tracking-widest font-bold">Exterior</span>
+                            <h3 class="text-2xl font-bold mt-1">Aggressive Front Fascia</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="gallery-item h-[400px] animate-on-scroll" data-category="interior" onclick="openLightbox(1)">
+                    <img src="images/interior.png" alt="Interior Details">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <span class="text-red-500 text-xs uppercase tracking-widest font-bold">Interior</span>
+                            <h3 class="text-2xl font-bold mt-1">M Carbon Bucket Seats</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="gallery-item h-[600px] animate-on-scroll" data-category="track" onclick="openLightbox(2)">
+                    <img src="images/track.png" alt="Track Performance">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <span class="text-gray-400 text-xs uppercase tracking-widest font-bold">Track</span>
+                            <h3 class="text-2xl font-bold mt-1">Dynamic Drift at Night</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4 (Reusing for layout) -->
+                <div class="gallery-item h-[450px] animate-on-scroll" data-category="exterior" onclick="openLightbox(3)">
+                    <img src="images/hero.png" alt="Side Profile" style="object-position: left center;">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <span class="text-blue-400 text-xs uppercase tracking-widest font-bold">Exterior</span>
+                            <h3 class="text-2xl font-bold mt-1">Cinematic Lighting</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 5 (Reusing for layout) -->
+                <div class="gallery-item h-[550px] animate-on-scroll" data-category="interior" onclick="openLightbox(4)">
+                    <img src="images/interior.png" alt="Dashboard" style="object-position: right center;">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <span class="text-red-500 text-xs uppercase tracking-widest font-bold">Interior</span>
+                            <h3 class="text-2xl font-bold mt-1">Digital Cockpit</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 6 (Reusing for layout) -->
+                <div class="gallery-item h-[400px] animate-on-scroll" data-category="track" onclick="openLightbox(5)">
+                    <img src="images/track.png" alt="High Speed" style="object-position: center bottom;">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <span class="text-gray-400 text-xs uppercase tracking-widest font-bold">Performance</span>
+                            <h3 class="text-2xl font-bold mt-1">Track Dominance</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm opacity-0 invisible flex items-center justify-center">
+        <button id="lightbox-close" class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-10 h-10"></i>
+        </button>
+        
+        <button id="lightbox-prev" class="absolute left-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors p-4">
+            <i data-lucide="chevron-left" class="w-12 h-12"></i>
+        </button>
+        
+        <div class="w-full max-w-6xl max-h-[85vh] px-20 relative flex flex-col items-center">
+            <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl">
+            <div id="lightbox-caption" class="mt-6 text-center">
+                <p id="lightbox-title" class="text-2xl font-bold text-white"></p>
+                <p id="lightbox-cat" class="text-sm text-gray-400 uppercase tracking-widest mt-1"></p>
+            </div>
+        </div>
+
+        <button id="lightbox-next" class="absolute right-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors p-4">
+            <i data-lucide="chevron-right" class="w-12 h-12"></i>
+        </button>
+    </div>
+
+    <div id="footer-container"></div>
+    <script src="components.js"></script>
+    <script>
+        const items = document.querySelectorAll('.gallery-item');
+        const images = Array.from(items).map(item => ({
+            src: item.querySelector('img').src,
+            title: item.querySelector('h3').innerText,
+            cat: item.querySelector('span').innerText
+        }));
+        
+        let currentIndex = 0;
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxCat = document.getElementById('lightbox-cat');
+
+        window.openLightbox = (index) => {
+            currentIndex = index;
+            updateLightbox();
+            lightbox.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeLightbox = () => {
+            lightbox.classList.remove('open');
+            document.body.style.overflow = '';
+        };
+
+        const updateLightbox = () => {
+            lightboxImg.style.opacity = 0;
+            setTimeout(() => {
+                lightboxImg.src = images[currentIndex].src;
+                lightboxTitle.innerText = images[currentIndex].title;
+                lightboxCat.innerText = images[currentIndex].cat;
+                lightboxImg.style.opacity = 1;
+            }, 200);
+        };
+
+        document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+        document.getElementById('lightbox-prev').addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateLightbox();
+        });
+        document.getElementById('lightbox-next').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateLightbox();
+        });
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+            if(e.key === 'ArrowLeft' && lightbox.classList.contains('open')) {
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                updateLightbox();
+            }
+            if(e.key === 'ArrowRight' && lightbox.classList.contains('open')) {
+                currentIndex = (currentIndex + 1) % images.length;
+                updateLightbox();
+            }
+        });
+
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-white', 'text-black');
+                    b.classList.add('bg-transparent', 'text-white');
+                    if(b.classList.contains('bg-white/10')) b.classList.remove('bg-white/10');
+                });
+                btn.classList.add('bg-white', 'text-black');
+                btn.classList.remove('bg-transparent', 'text-white');
+
+                const filter = btn.getAttribute('data-filter');
+                
+                items.forEach(item => {
+                    if(filter === 'all' || item.getAttribute('data-category') === filter) {
+                        item.style.display = 'block';
+                        gsap.fromTo(item, {opacity: 0, scale: 0.9}, {opacity: 1, scale: 1, duration: 0.5});
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
